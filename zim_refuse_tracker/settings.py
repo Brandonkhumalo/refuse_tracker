@@ -89,6 +89,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'zim_refuse_tracker.wsgi.application'
+ASGI_APPLICATION = 'zim_refuse_tracker.wsgi.application'
 
 
 # Database

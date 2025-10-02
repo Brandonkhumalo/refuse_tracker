@@ -18,7 +18,7 @@ honcho>=2.0.0
 channels>=4.0
 
 # JWT authentication
-djangorestframework-simplejwt>=6.1.0
+djangorestframework-simplejwt>=5.5.1
 PyJWT==2.9.0
 
 django-cors-headers==4.7.0

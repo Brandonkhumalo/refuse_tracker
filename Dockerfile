@@ -31,3 +31,6 @@ RUN python manage.py collectstatic --noinput
 
 # Expose port for web
 EXPOSE 8000
+
+# Default command (Daphne server)
+CMD ["daphne", "-b", "0.0.0.0", "-p", "8000", "zim_refuse_tracker.asgi:application"]

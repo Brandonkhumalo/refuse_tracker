@@ -3,6 +3,7 @@ Django>=4.2,<5.0
 
 # PostgreSQL database
 psycopg2-binary>=2.9
+daphne
 
 # Asynchronous task processing
 dramatiq>=1.17

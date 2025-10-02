@@ -23,11 +23,11 @@ RUN pip install -r requirements.txt
 # Copy project code
 COPY . .
 
+# Set Django settings
+ENV DJANGO_SETTINGS_MODULE=zim_refuse_tracker.settings
+
 # Collect static files
 RUN python manage.py collectstatic --noinput
 
 # Expose port for web
 EXPOSE 8000
-
-# Start both web and worker using Honcho
-CMD ["honcho", "start", "-f", "Procfile"]

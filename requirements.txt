@@ -1,0 +1,42 @@
+# Django framework
+Django>=4.2,<5.0
+
+# REST API
+djangorestframework>=3.20
+
+# PostgreSQL database
+psycopg2-binary>=2.9
+
+# Asynchronous task processing
+dramatiq>=1.17
+
+# Redis broker for Dramatiq
+redis>=5.0
+channels-redis
+djangorestframework==3.16.0
+
+honcho
+
+# Django Channels for WebSockets
+channels>=4.0
+
+# JWT authentication
+djangorestframework-simplejwt>=6.0
+PyJWT==2.9.0
+
+django-cors-headers==4.7.0
+
+# Geocoding / distance calculations
+geopy>=2.3
+
+# Email support
+django-anymail>=9.0  # Optional if using services like Mailgun or SendGrid
+# Or use just the default smtplib (no extra package required)
+
+# Environment variables
+python-dotenv>=1.0
+
+# Optional utilities
+requests>=2.31
+
+python-dotenv

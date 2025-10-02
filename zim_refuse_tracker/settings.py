@@ -21,9 +21,14 @@ EMAIL_HOST_USER = "brandon@tishanyq.co.zw"
 EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
-REDIS_PASSWORD = 'lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF'
-REDIS_PORT = '6379'
-REDIS_HOST = 'redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553'
+REDIS_PASSWORD = "lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF"
+
+# Use either INTERNAL or EXTERNAL host
+REDIS_HOST = "mainline.proxy.rlwy.net"   # external, works anywhere
+REDIS_PORT = 36553
+
+# Build Redis URL
+REDIS_URL = f"redis://default:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
 
 # Application definition
 
@@ -58,19 +63,16 @@ SIMPLE_JWT = {
 }
 
 CHANNEL_LAYERS = {
-    'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {"hosts": [(REDIS_HOST, REDIS_PORT)]},
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {"hosts": [REDIS_URL]},   # expects full URL
     },
 }
 
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
     "OPTIONS": {
-        "host": REDIS_HOST,
-        "port": REDIS_PORT,
-        "password": REDIS_PASSWORD,
-        "db": 0,
+        "url": REDIS_URL,   # expects full URL
     },
 }
 

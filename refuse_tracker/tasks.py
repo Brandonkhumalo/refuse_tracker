@@ -1,7 +1,13 @@
 import dramatiq
-from .models import Truck, User
+import os
+import django
 from geopy.distance import geodesic
 from django.core.mail import send_mail
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "zim_refuse_tracker.settings")
+django.setup()
+
+from .models import Truck, User
 
 @dramatiq.actor
 def send_truck_proximity_alert(truck_id, truck_lat, truck_lng):

@@ -12,13 +12,13 @@ redis>=5.0
 channels-redis
 djangorestframework==3.16.0
 
-honcho
+honcho>=2.0.0
 
 # Django Channels for WebSockets
 channels>=4.0
 
 # JWT authentication
-djangorestframework-simplejwt>=6.0
+djangorestframework-simplejwt>=6.1.0
 PyJWT==2.9.0
 
 django-cors-headers==4.7.0

@@ -28,7 +28,12 @@ REDIS_HOST = "mainline.proxy.rlwy.net"   # external, works anywhere
 REDIS_PORT = 36553
 
 # Build Redis URL
-REDIS_URL = f"redis://default:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
+#REDIS_URL = f"redis://default:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
+
+REDIS_URL = os.getenv(
+    "REDIS_URL",
+    "redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553"
+)
 
 # Application definition
 

@@ -1,8 +1,25 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 import uuid
+
+class CustomUserManager(BaseUserManager):
+    def create_user(self, email, password=None, **extra_fields):
+        if not email:
+            raise ValueError("Users must have an email address")
+        email = self.normalize_email(email)
+        user = self.model(email=email, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        extra_fields.setdefault("role", "admin")
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        return self.create_user(email, password, **extra_fields)
 
 class User(AbstractUser):
     ROLE_CHOICES = (
@@ -10,9 +27,7 @@ class User(AbstractUser):
         ('admin', 'Admin'),
     )
 
-    # Remove username field
-    username = None  
-
+    username = None  # removed
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20, blank=True)
@@ -21,13 +36,23 @@ class User(AbstractUser):
     lng = models.FloatField(null=True, blank=True)
     suburb = models.CharField(max_length=100, blank=True, null=True)
 
-    # Override groups and user_permissions to avoid reverse accessor clashes
-    groups = models.ManyToManyField(Group, verbose_name=_('groups'), blank=True,related_name="refuse_tracker_users")
-    user_permissions = models.ManyToManyField(Permission, verbose_name=_('user permissions'),
-        blank=True, related_name="refuse_tracker_user_permissions")
+    groups = models.ManyToManyField(
+        "auth.Group",
+        verbose_name='groups',
+        blank=True,
+        related_name="refuse_tracker_users"
+    )
+    user_permissions = models.ManyToManyField(
+        "auth.Permission",
+        verbose_name='user permissions',
+        blank=True,
+        related_name="refuse_tracker_user_permissions"
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+
+    objects = CustomUserManager()  # <-- use custom manager
 
     def __str__(self):
         return self.email

@@ -21,6 +21,10 @@ EMAIL_HOST_USER = "brandon@tishanyq.co.zw"
 EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
+REDIS_PASSWORD = 'lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF'
+REDIS_PORT = 'redis.railway.internal'
+REDIS_HOST = '6379'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -56,7 +60,17 @@ SIMPLE_JWT = {
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {"hosts": [("redis", 6379)]},
+        'CONFIG': {"hosts": [(REDIS_HOST, REDIS_PORT)]},
+    },
+}
+
+DRAMATIQ_BROKER = {
+    "BROKER": "dramatiq.brokers.redis.RedisBroker",
+    "OPTIONS": {
+        "host": REDIS_HOST,
+        "port": REDIS_PORT,
+        "password": REDIS_PASSWORD,
+        "db": 0,
     },
 }
 

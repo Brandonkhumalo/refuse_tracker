@@ -1,9 +1,6 @@
 # Django framework
 Django>=4.2,<5.0
 
-# REST API
-djangorestframework>=3.20
-
 # PostgreSQL database
 psycopg2-binary>=2.9
 

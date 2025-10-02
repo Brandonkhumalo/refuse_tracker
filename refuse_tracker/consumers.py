@@ -2,26 +2,25 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.utils import timezone
-from refuse_tracker.models import Truck, LocationUpdate
-from refuse_tracker.tasks import send_truck_proximity_alert
-
 
 class TruckTrackingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         # Only allow authenticated users
         if self.scope["user"].is_anonymous:
             await self.close()
-        else:
-            self.user = self.scope["user"]
-            # Join global trucks group
-            await self.channel_layer.group_add("trucks", self.channel_name)
+            return
 
-            # If resident, join their suburb-specific group
-            if self.user.role == "resident" and self.user.suburb:
-                self.suburb_group = f"suburb_{self.user.suburb.lower()}"
-                await self.channel_layer.group_add(self.suburb_group, self.channel_name)
+        self.user = self.scope["user"]
 
-            await self.accept()
+        # Join global trucks group
+        await self.channel_layer.group_add("trucks", self.channel_name)
+
+        # If resident, join their suburb-specific group
+        if getattr(self.user, "role", None) == "resident" and getattr(self.user, "suburb", None):
+            self.suburb_group = f"suburb_{self.user.suburb.lower()}"
+            await self.channel_layer.group_add(self.suburb_group, self.channel_name)
+
+        await self.accept()
 
     async def disconnect(self, close_code):
         await self.channel_layer.group_discard("trucks", self.channel_name)
@@ -44,10 +43,14 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
         truck_lat = data["latitude"]
         truck_lng = data["longitude"]
 
-        # ✅ Save location update in DB
+        # Lazy import models to avoid AppRegistryNotReady
+        from refuse_tracker.models import Truck, LocationUpdate
+        from refuse_tracker.tasks import send_truck_proximity_alert
+
+        # Save location update in DB
         location = await self.save_location(truck_id, truck_lat, truck_lng)
 
-        # ✅ Broadcast to global group (admins/monitors)
+        # Broadcast to global group (admins/monitors)
         await self.channel_layer.group_send(
             "trucks",
             {
@@ -59,7 +62,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        # ✅ Broadcast to suburb-specific group
+        # Broadcast to suburb-specific group
         truck = await database_sync_to_async(Truck.objects.get)(pk=truck_id)
         suburb_group = f"suburb_{truck.route_info.lower()}"
         await self.channel_layer.group_send(
@@ -73,7 +76,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
             }
         )
 
-        # ✅ Enqueue Dramatiq task to send proximity emails asynchronously
+        # Enqueue Dramatiq task to send proximity alerts asynchronously
         send_truck_proximity_alert.send(truck_id, truck_lat, truck_lng)
 
     async def truck_update(self, event):
@@ -86,6 +89,9 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def save_location(self, truck_id, lat, lng):
         """Save the latest location update to the database"""
+        # Lazy import models to avoid AppRegistryNotReady
+        from refuse_tracker.models import Truck, LocationUpdate
+
         truck = Truck.objects.get(pk=truck_id)
         return LocationUpdate.objects.create(
             truck=truck,

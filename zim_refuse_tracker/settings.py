@@ -23,7 +23,7 @@ DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
 REDIS_PASSWORD = 'lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF'
 REDIS_PORT = '6379'
-REDIS_HOST = 'redis.railway.internal'
+REDIS_HOST = 'redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553'
 
 # Application definition
 

@@ -22,8 +22,8 @@ EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
 REDIS_PASSWORD = 'lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF'
-REDIS_PORT = 'redis.railway.internal'
-REDIS_HOST = '6379'
+REDIS_PORT = '6379'
+REDIS_HOST = 'redis.railway.internal'
 
 # Application definition
 
@@ -103,7 +103,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'zim_refuse_tracker.wsgi.application'
-ASGI_APPLICATION = 'zim_refuse_tracker.wsgi.application'
+ASGI_APPLICATION = 'zim_refuse_tracker.asgi.application'
 
 
 # Database

@@ -22,19 +22,8 @@ EMAIL_HOST_USER = "brandon@tishanyq.co.zw"
 EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
-REDIS_PASSWORD = "lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF"
 
-# Use either INTERNAL or EXTERNAL host
-REDIS_HOST = "mainline.proxy.rlwy.net"   # external, works anywhere
-REDIS_PORT = 36553
-
-# Build Redis URL
-#REDIS_URL = f"redis://default:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}"
-
-REDIS_URL = config(
-    "REDIS_URL",
-    "redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553"
-)
+REDIS_URL = config("redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553")
 
 # Application definition
 

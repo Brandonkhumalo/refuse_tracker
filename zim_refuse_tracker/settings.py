@@ -23,7 +23,7 @@ EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
 
-REDIS_URL = config("redis://default:lYggMnABfnrFgJrFFrEmWkKfhsBwrTyF@mainline.proxy.rlwy.net:36553")
+REDIS_URL = config("REDIS_URL")
 
 # Application definition
 

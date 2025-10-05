@@ -15,8 +15,8 @@ ALLOWED_HOSTS = ['*']
 CORS_ALLOW_ALL_ORIGINS = True
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "mail.tishanyq.co.zw"   # or smtp.yourprovider.com
-EMAIL_PORT = 465                     # 587 for TLS, 465 for SSL
+EMAIL_HOST = "mail.tishanyq.co.zw"   
+EMAIL_PORT = 465                     
 EMAIL_USE_TLS = True                 # set False if using SSL
 EMAIL_HOST_USER = "brandon@tishanyq.co.zw"
 EMAIL_HOST_PASSWORD = "@Brandon40%"

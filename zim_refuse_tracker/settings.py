@@ -23,7 +23,7 @@ EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
 
-REDIS_URL = config("REDIS_URL", deafult='redis://default:uQpFYAMIbKbTvRGoHTnxDjuWkjmHMSoF@redis.railway.internal:6379')
+REDIS_URL = config("REDIS_URL", default='redis://default:uQpFYAMIbKbTvRGoHTnxDjuWkjmHMSoF@redis.railway.internal:6379')
 
 # Application definition
 

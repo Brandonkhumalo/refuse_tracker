@@ -38,3 +38,4 @@ def send_truck_proximity_alert(truck_id, truck_lat, truck_lng):
                     fail_silently=False  # Set to False so you get errors if email fails
                 )
 #dramatiq refuse_tracker.tasks --processes 1 --threads 2
+#daphne -b 0.0.0.0 -p 8000 zim_refuse_tracker.asgi:application

@@ -9,6 +9,9 @@ python-decouple
 # Asynchronous task processing
 dramatiq>=1.17
 
+gunicorn>=20.1.0
+
+
 # Redis broker for Dramatiq
 redis>=5.0
 channels-redis

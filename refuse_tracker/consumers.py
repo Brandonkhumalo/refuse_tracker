@@ -17,6 +17,8 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
         lat = data["latitude"]
         lng = data["longitude"]
 
+        print(data)
+
         # Import models and tasks inside function to avoid AppRegistryNotReady
         from refuse_tracker.models import Truck, LocationUpdate
         from refuse_tracker.tasks import send_truck_proximity_alert

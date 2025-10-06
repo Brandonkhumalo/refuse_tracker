@@ -36,7 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'refuse_tracker',
+    'refuse_tracker.apps.RefuseTrackerConfig',
     'rest_framework',
     'rest_framework_simplejwt',
     'channels',

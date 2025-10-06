@@ -7,7 +7,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope.get("user", None) or "anonymous"
 
-        # Join the main truck group
+        # Join the global truck group
         await self.channel_layer.group_add("trucks", self.channel_name)
 
         # Handle suburb-based subscriptions for residents
@@ -17,7 +17,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
 
         await self.accept()
 
-        # If the frontend connects with ?truck_id=ID, send last DB location
+        # Send last known truck location from DB immediately
         query_string = self.scope.get("query_string", b"").decode()
         if "truck_id" in query_string:
             try:
@@ -33,6 +33,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
                         "latitude": last_location["latitude"],
                         "longitude": last_location["longitude"],
                         "timestamp": str(last_location["timestamp"]),
+                        "truck_name": "Truck",  # default name if not sent
                         "from_db": True
                     }))
             except Exception as e:
@@ -44,7 +45,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.suburb_group, self.channel_name)
 
     async def receive(self, text_data):
-        """Receive truck location and broadcast"""
+        """Receive live truck location from truck devices"""
         data = json.loads(text_data)
         truck_id = data["truck_id"]
         truck_lat = data["latitude"]
@@ -65,6 +66,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
                 "latitude": truck_lat,
                 "longitude": truck_lng,
                 "timestamp": str(location.timestamp),
+                "truck_name": "Truck"
             }
         )
 
@@ -79,10 +81,11 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
                 "latitude": truck_lat,
                 "longitude": truck_lng,
                 "timestamp": str(location.timestamp),
+                "truck_name": "Truck"
             }
         )
 
-        # Dramatiq task
+        # Trigger proximity alerts asynchronously
         send_truck_proximity_alert.send(truck_id, truck_lat, truck_lng)
 
     async def truck_update(self, event):
@@ -91,7 +94,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def save_location(self, truck_id, lat, lng):
-        """Save the truck's latest location to the database"""
+        """Save truck location to DB"""
         from refuse_tracker.models import Truck, LocationUpdate
         truck = Truck.objects.get(pk=truck_id)
         return LocationUpdate.objects.create(
@@ -103,7 +106,7 @@ class TruckTrackingConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_latest_location(self, truck_id):
-        """Fetch the last known location from DB"""
+        """Get last known location from DB"""
         from refuse_tracker.models import LocationUpdate
         last = LocationUpdate.objects.filter(truck_id=truck_id).order_by("-timestamp").first()
         if last:

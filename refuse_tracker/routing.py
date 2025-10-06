@@ -5,6 +5,6 @@ websocket_urlpatterns = [
     # Global trucks WebSocket (drivers/admins send updates here)
     re_path(r"ws/trucks/$", TruckTrackingConsumer.as_asgi()),
 
-    # Residents connect to suburb-specific updates
+    # Residents connect to suburb-specific updates3
     re_path(r"ws/trucks/resident/$", ResidentTrackingConsumer.as_asgi()),
 ]

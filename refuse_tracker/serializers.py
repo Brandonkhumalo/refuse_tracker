@@ -6,11 +6,10 @@ class SignUpSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id','email','password','phone','role','lat','lng','suburb',]
+        fields = ['id','email','password','phone','role','lat','lng','suburb']
 
     def create(self, validated_data):
         # Use create_user to ensure password hashing
-        print(validated_data)
         user = User.objects.create_user(
             email=validated_data['email'],
             password=validated_data['password'],

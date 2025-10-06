@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Truck, Schedule, LocationUpdate
@@ -48,7 +48,7 @@ def truck_detail(request, pk):
 # Schedules
 # -----------------------------
 @api_view(['GET', 'POST'])
-@permission_classes([IsAdminUser])
+@permission_classes([AllowAny])
 def schedules_list_create(request):
     if request.method == 'GET':
         schedules = Schedule.objects.all()
@@ -123,11 +123,24 @@ def location_detail(request, pk):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def resident_schedules(request):
-    if request.user.role != 'resident':
-        return Response({"error": "Only residents can access schedules"}, status=status.HTTP_403_FORBIDDEN)
 
-    # Filter schedules by user's suburb
-    schedules = Schedule.objects.filter(suburb=request.user.suburb)
+    user = request.user
+
+    if user.role != 'resident':
+        return Response(
+            {"error": "Only residents can access schedules"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+
+    if not user.suburb:
+        return Response(
+            {"error": "User does not have a suburb assigned"},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Filter schedules by user's suburb (case-insensitive)
+    user_suburb = user.suburb.strip().lower()
+    schedules = Schedule.objects.filter(suburb__iexact=user_suburb)
     serializer = ScheduleSerializer(schedules, many=True)
     return Response(serializer.data)
 

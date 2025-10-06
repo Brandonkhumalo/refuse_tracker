@@ -23,7 +23,8 @@ EMAIL_HOST_PASSWORD = "@Brandon40%"
 DEFAULT_FROM_EMAIL = 'brandkhumz40@gmail.com'
 
 
-REDIS_URL = config("REDIS_URL", default='redis://default:uQpFYAMIbKbTvRGoHTnxDjuWkjmHMSoF@redis.railway.internal:6379')
+REDIS_URL = "redis://default:OFcdHbPZViKPhLAGoVUQIHtUjIzaOVDf@redis.railway.internal:6379"
+#REDIS_URL = config("REDIS_URL", default='redis://127.0.0.1:6379/0')
 
 # Application definition
 
@@ -64,11 +65,10 @@ CHANNEL_LAYERS = {
     },
 }
 
+# Dramatiq broker
 DRAMATIQ_BROKER = {
     "BROKER": "dramatiq.brokers.redis.RedisBroker",
-    "OPTIONS": {
-        "url": REDIS_URL,   # expects full URL
-    },
+    "OPTIONS": {"url": REDIS_URL},
 }
 
 MIDDLEWARE = [

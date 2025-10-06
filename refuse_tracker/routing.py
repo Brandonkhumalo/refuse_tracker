@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 from .consumers import TruckTrackingConsumer
-
+1
 websocket_urlpatterns = [
     # Global trucks WebSocket (drivers/admins send updates here)
     re_path(r"ws/trucks/$", TruckTrackingConsumer.as_asgi()),

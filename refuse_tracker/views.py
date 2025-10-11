@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Truck, Schedule, LocationUpdate
-from .serializers import TruckSerializer, ScheduleSerializer, LocationUpdateSerializer
+from .serializers import TruckSerializer, ScheduleSerializer, LocationUpdateSerializer, UserProfileSerializer, UpdateSuburbSerializer
 from datetime import date
 
 # -----------------------------
@@ -172,3 +172,22 @@ def resident_locations(request):
     locations = LocationUpdate.objects.filter(truck__in=trucks).order_by('-timestamp')
     serializer = LocationUpdateSerializer(locations, many=True)
     return Response(serializer.data)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def user_profile(request):
+    user = request.user
+    serializer = UserProfileSerializer(user)
+    return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# Update user suburb
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_suburb(request):
+    user = request.user
+    serializer = UpdateSuburbSerializer(user, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response({"message": "Suburb updated successfully", "suburb": serializer.data['suburb']}, status=status.HTTP_200_OK)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

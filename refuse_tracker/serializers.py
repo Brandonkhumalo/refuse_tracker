@@ -41,24 +41,6 @@ class LoginSerializer(serializers.Serializer):
         attrs['user'] = user
         return attrs
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['id', 'email', 'phone', 'role', 'lat', 'lng', 'password']
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        user = User(
-            email=validated_data['email'],
-            phone=validated_data.get('phone'),
-            role=validated_data.get('role', 'resident'),
-            lat=validated_data.get('lat'),
-            lng=validated_data.get('lng')
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
-
 class TruckSerializer(serializers.ModelSerializer):
     class Meta:
         model = Truck
@@ -75,3 +57,14 @@ class LocationUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocationUpdate
         fields = '__all__'
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'phone', 'suburb']
+
+
+class UpdateSuburbSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['suburb']

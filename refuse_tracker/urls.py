@@ -21,4 +21,7 @@ urlpatterns = [
     path('resident/schedules/', views.resident_schedules),
     path('resident/trucks/', views.resident_trucks),
     path('resident/locations/', views.resident_locations),
+
+    path('profile/', views.user_profile, name='user_profile'),
+    path('profile/update-suburb/', views.update_suburb, name='update_suburb'),
 ]

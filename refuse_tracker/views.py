@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import Truck, Schedule, LocationUpdate
 from .serializers import TruckSerializer, ScheduleSerializer, LocationUpdateSerializer
+from datetime import date
 
 # -----------------------------
 # Trucks
@@ -138,9 +139,14 @@ def resident_schedules(request):
             status=status.HTTP_400_BAD_REQUEST
         )
 
-    # Filter schedules by user's suburb (case-insensitive)
+    # Filter schedules by user's suburb (case-insensitive) and collection_date >= today
+    today = date.today()
     user_suburb = user.suburb.strip().lower()
-    schedules = Schedule.objects.filter(suburb__iexact=user_suburb)
+    schedules = Schedule.objects.filter(
+        suburb__iexact=user_suburb,
+        collection_date__gte=today
+    ).order_by('collection_date')  # Optional: sort by date ascending
+
     serializer = ScheduleSerializer(schedules, many=True)
     return Response(serializer.data)
 
